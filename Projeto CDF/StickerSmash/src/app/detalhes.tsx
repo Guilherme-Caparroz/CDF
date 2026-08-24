@@ -176,16 +176,18 @@ const styles = StyleSheet.create({
     },
 
     areaBotao: {
-        marginHorizontal: 20,
+        marginHorizontal: 30,
         marginTop: 20,
+        alignItems: 'center',
     },
 
-    botaovoltarbaixo: {
-        borderWidth: 1,
-        borderColor: '#D1D5DB',
-        borderRadius: 12,
-        paddingVertical: 14,
-        alignItems: 'center',
+   botaovoltarbaixo: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    alignItems: 'center',
     },
 
     textoBotao: {
