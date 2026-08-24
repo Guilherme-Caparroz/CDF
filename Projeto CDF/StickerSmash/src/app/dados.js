@@ -1,7 +1,7 @@
 let lancamentos = [
     {
         nome: "Salario mensal",
-        valor: 3.500,
+        valor: 3500,
         tipo: "receita",
         categoria: "Salário",
         data: "05/08/2025",
