@@ -1,4 +1,5 @@
 import * as Device from 'expo-device';
+import { Link } from 'expo-router';
 import { Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -55,6 +56,10 @@ export default function HomeScreen() {
           />
         </ThemedView>
 
+           <Link href="/detalhe" style={styles.linkDetalhe}>
+          <ThemedText type="code">Ver detalhes do salário →</ThemedText>
+        </Link>
+
         {Platform.OS === 'web' && <WebBadge />}
       </SafeAreaView>
     </ThemedView>
@@ -88,11 +93,14 @@ const styles = StyleSheet.create({
   code: {
     textTransform: 'uppercase',
   },
-  stepContainer: {
+    stepContainer: {
     gap: Spacing.three,
     alignSelf: 'stretch',
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.four,
     borderRadius: Spacing.four,
+  },
+  linkDetalhe: {
+    marginTop: Spacing.three,
   },
 });
