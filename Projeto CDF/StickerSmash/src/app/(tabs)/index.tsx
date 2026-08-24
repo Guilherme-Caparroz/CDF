@@ -56,9 +56,9 @@ export default function HomeScreen() {
           />
         </ThemedView>
 
-           <Link href="/detalhe" style={styles.linkDetalhe}>
-          <ThemedText type="code">Ver detalhes do salário →</ThemedText>
-        </Link>
+           <Link href={{ pathname: '/detalhes', params: { id: '0' } }} style={styles.linkDetalhe}>
+            <ThemedText type="code">Ver detalhes do salário →</ThemedText>
+          </Link>
 
         {Platform.OS === 'web' && <WebBadge />}
       </SafeAreaView>
