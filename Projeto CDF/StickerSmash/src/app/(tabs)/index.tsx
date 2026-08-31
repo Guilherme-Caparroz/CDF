@@ -92,6 +92,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 40,
   },
+  linkDetalhe: {
+    marginBottom: 0,
+  },
     header: {
     backgroundColor: '#1B2340',
     paddingTop: 60,
