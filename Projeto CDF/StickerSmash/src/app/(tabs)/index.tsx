@@ -1,106 +1,131 @@
-import * as Device from 'expo-device';
 import { Link } from 'expo-router';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <Text style={styles.titulo}>CDF</Text>
+        <View>
+          <Text>
+            Saldo Total
+          </Text>
+          <Text>
+            R$ 3.100,00
+          </Text>
+          {/* Essa view vai servir  para colocar a bolinha que esta no design rsrsrssrsrs caua viado   */}
+          <View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+            <Text>Conta ativa • Atualizado agora</Text>
+          </View>
 
-           <Link href="/detalhe" style={styles.linkDetalhe}>
-          <ThemedText type="code">Ver detalhes do salário →</ThemedText>
+        </View>
+
+        <View>
+          <Text style={styles.tituloSecao}>Últimos Lançamentos</Text>
+
+          {/* Item 1: Salário (id: 0) */}
+          <Link href={{ pathname: '/detalhes', params: { id: '0' } }} style={styles.linkDetalhe}>
+            <View style={styles.cardLancamento}>
+              <View style={styles.iconeArea}>
+                {/* Ícone 1 */}
+              </View>
+              <View style={styles.infoEsquerda}>
+                <Text style={styles.nomeLancamento}>Salário Mensal</Text>
+                <Text style={styles.categoriaLancamento}>Salário</Text>
+              </View>
+              <View style={styles.infoDireita}>
+                <Text style={styles.valorLancamento}>+ R$ 3.500,00</Text>
+                <Text style={styles.dataLancamento}>05/08/2025</Text>
+              </View>
+            </View>
+          </Link>
+
+          {/* Item 2: Supermercado */}
+          <Link href={{ pathname: '/detalhes', params: { id: '1' } }} style={styles.linkDetalhe}>
+            <View style={styles.cardLancamento}>
+              <View style={styles.iconeArea}>
+             
+              </View>
+              <View style={styles.infoEsquerda}>
+                <Text style={styles.nomeLancamento}>Supermercado Centro</Text>
+                <Text style={styles.categoriaLancamento}>Alimentação</Text>
+              </View>
+              <View style={styles.infoDireita}>
+                <Text style={styles.valorLancamento}>- R$ 350,00</Text>
+                <Text style={styles.dataLancamento}>10/08/2025</Text>
+              </View>
+            </View>
+          </Link>
+
+          {/* Item 3: Recarga Cartão */}
+          <Link href={{ pathname: '/detalhes', params: { id: '2' } }} style={styles.linkDetalhe}>
+            <View style={styles.cardLancamento}>
+              <View style={styles.iconeArea}>
+                {}
+              </View>
+              <View style={styles.infoEsquerda}>
+                <Text style={styles.nomeLancamento}>Recarga Cartão</Text>
+                <Text style={styles.categoriaLancamento}>Transporte</Text>
+              </View>
+              <View style={styles.infoDireita}>
+                <Text style={styles.valorLancamento}>- R$ 50,00</Text>
+                <Text style={styles.dataLancamento}>12/08/2025</Text>
+              </View>
+            </View>
+          </Link>
+
+
+          {/*botaozinhoverde*/}
+          <TouchableOpacity style={styles.botaoAdicionar}>
+            <Text style={styles.textoBotaoAdicionar}>+ Adicionar</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Link href={{ pathname: '/detalhes', params: { id: '0' } }} style={styles.linkDetalhe}>
+          <Text style={styles.linkTexto}>Ver detalhes do salário →</Text>
         </Link>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
+{/*eu so adicionei os styles novos, os antigos aindam estao normais*/}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    padding: 20,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-    stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  titulo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   linkDetalhe: {
-    marginTop: Spacing.three,
+    marginTop: 20,
   },
+  linkTexto: {
+    fontSize: 14,
+    color: '#1B2340',
+  },
+  cardSaldo: {},
+  labelSaldo: {},
+  valorSaldo: {},
+  statusContainer: {},
+  pontoStatus: {},
+  textoStatus: {},
+  tituloSecao: {},
+  cardLancamento: {},
+  iconeArea: {},
+  infoEsquerda: {},
+  nomeLancamento: {},
+  categoriaLancamento: {},
+  infoDireita: {},
+  valorLancamento: {},
+  dataLancamento: {},
+  // Botão Adicionar
+  botaoAdicionar: {},
+  textoBotaoAdicionar: {},
+
 });
