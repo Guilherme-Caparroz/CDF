@@ -20,9 +20,9 @@ export default function Tela2() {
 
             <View style={styles.header}>
                 <Link href="/" style={styles.headerbotao}>
-                    <Text style={styles.textoVoltar}></Text>
+                    <Text style={styles.textoVoltar}>← Voltar</Text>
                 </Link>
-                <View style={styles.headerCentro}>
+                <View style={styles.headerCentro} pointerEvents="none">
                     <Text style={styles.headerpalavra}>Detalhes</Text>
                 </View>
             </View>
