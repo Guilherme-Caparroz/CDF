@@ -15,7 +15,7 @@ export default function HomeScreen() {
           <Text>
             R$ 3.100,00
           </Text>
-          {/* Essa view vai servir  para colocar a bolinha que esta no design rsrsrssrsrs caua viado   */}
+          {/* Essa view vai servir  para colocar a bolinha que esta no design rsrsrssrsrs    */}
           <View>
 
             <Text>Conta ativa • Atualizado agora</Text>
