@@ -1,9 +1,24 @@
 import { Link, useRouter } from 'expo-router';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import { carregarLancamentos } from '../dados';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [carregando, setCarregando] = useState(true);
+
+  // com array vazio roda uma vez so quando o celular abre *
+  useEffect(() => {
+    async function iniciar() {
+      await carregarLancamentos(); // busca o que tá salvo no banco local
+      setCarregando(false);        // avisa que já pode mostrar a tela
+    }
+    iniciar();
+  }, []);
+
+  // eu coloquei essa parte aqui gui no seu arquivo se der erro e essa parte aqui *
+
 
   return (
     <SafeAreaView style={styles.container}>
