@@ -33,7 +33,7 @@ export default function AdicionarLancamento() {
       tipo,
       categoria,
       data,
-      observacao
+      observacaoa
     );
 
     // Volta pra tela inicial depois de salvar
