@@ -5,14 +5,25 @@ import { Text, View, StyleSheet, Image } from 'react-native';
 import { lancamentos } from './dados';
 
 export default function Tela2() {
-
     // Pega o id que veio da tela anterior
     const { id } = useLocalSearchParams();
 
-    // Procura o lançamento pelo id
-    const lancamento = lancamentos[Number(id)];
+    // Procura o lançamento pelo id de forma segura
+    const lancamento = id !== undefined ? lancamentos[Number(id)] : null;
 
-    // Verifica se é receita ou despesa, pra decidir a cor e o sinal do valor
+
+    if (!lancamento) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', flex: 1 }]}>
+                <Text style={{ fontSize: 16, marginBottom: 16 }}>Lançamento não encontrado.</Text>
+                <Link href="/" style={styles.botaovoltarbaixo}>
+                    <Text style={styles.textoBotao}>Voltar para o início</Text>
+                </Link>
+            </View>
+        );
+    }
+
+
     const ehReceita = lancamento.tipo === 'receita';
 
     return (
@@ -22,7 +33,7 @@ export default function Tela2() {
                 <Link href="/" style={styles.headerbotao}>
                     <Text style={styles.textoVoltar}>← Voltar</Text>
                 </Link>
-                <View style={styles.headerCentro}>
+                <View style={styles.headerCentro} pointerEvents="none">
                     <Text style={styles.headerpalavra}>Detalhes</Text>
                 </View>
             </View>
@@ -50,7 +61,7 @@ export default function Tela2() {
                         { color: ehReceita ? '#22C55E' : '#EF4444' },
                     ]}
                 >
-                    Valor: {ehReceita ? '+' : '-'} R$ {lancamento.valor.toFixed(2).replace('.', ',')}
+                    Valor: {ehReceita ? '+' : '-'} R$ {lancamento.valor ? lancamento.valor.toFixed(2).replace('.', ',') : '0,00'}
                 </Text>
 
                 <Text style={styles.titulo2}>Categoria: {lancamento.categoria}</Text>
@@ -71,7 +82,10 @@ export default function Tela2() {
 }
 
 const styles = StyleSheet.create({
-    container: {},
+    container: {
+        flex: 1,
+        backgroundColor: '#F3F4F6'
+    },
 
     header: {
         backgroundColor: '#1B2340',
@@ -102,7 +116,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-
     salariodetalhes: {
         backgroundColor: '#fcfcfd',
         paddingTop: 24,
@@ -181,13 +194,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-   botaovoltarbaixo: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 40,
-    alignItems: 'center',
+    botaovoltarbaixo: {
+        borderWidth: 1,
+        borderColor: '#D1D5DB',
+        borderRadius: 12,
+        paddingVertical: 14,
+        paddingHorizontal: 40,
+        alignItems: 'center',
     },
 
     textoBotao: {
