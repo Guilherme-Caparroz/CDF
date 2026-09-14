@@ -269,25 +269,97 @@ headerCentro: {
     color: '#9CA3AF',
   },
 
-  // Inputs genéricos
-  input: {},
-  
-  observacaoInput: {},
+// Inputs genéricos
+input: {
+    backgroundColor: 'white',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 14,
+    color: '#1B2340',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+
+observacaoInput: {
+    minHeight: 90,
+    textAlignVertical: 'top',
+},
 
 // Categorias
-linhaCategorias: {},
-chip: {},
-chipSelecionado: {},
-chipIcone: {},
-chipTexto: {},
-chipTextoSelecionado: {},
+linhaCategorias: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+},
+chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    gap: 6,
+},
+chipSelecionado: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#DCFCE7',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#22C55E',
+    gap: 6,
+},
+chipIcone: {
+    fontSize: 13,
+},
+chipTexto: {
+    fontSize: 13,
+    color: '#1B2340',
+    fontWeight: '500',
+},
+chipTextoSelecionado: {
+    fontSize: 13,
+    color: '#166534',
+    fontWeight: '600',
+},
 
 // Data
-dataContainer: {},
-dataInput: {},
-calendario: {},
+dataContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+},
+dataInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#1B2340',
+    padding: 0,
+},
+calendario: {
+    fontSize: 16,
+},
 
 // Botão salvar
-botaoSalvar: {},
-textoBotaoSalvar: {},
+botaoSalvar: {
+    backgroundColor: '#22C55E',
+    borderRadius: 30,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 24,
+},
+textoBotaoSalvar: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: 'bold',
+},
 });
