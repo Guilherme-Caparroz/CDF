@@ -1,12 +1,8 @@
 # CDF
 
-Controle Financeiro — Projeto PAM I
+**Controle Financeiro** — Trabalho em Grupo de PAM I
 
----
-
-> [!IMPORTANT]
-> **Sua inscrição foi aceita!** Bem-vindos ao Trabalho em Grupo de PAM I.
-> Abaixo estão as fichas de entrega e os links das aulas que vocês vão precisar.
+Aplicativo de **controle de gastos** — ajuda o usuário a controlar seus gastos no mês e adquirir mais controle financeiro.
 
 ## Integrantes
 
@@ -15,9 +11,27 @@ Controle Financeiro — Projeto PAM I
 - Guilherme Oliveira Santos
 - Erick Constante
 
-## Tema
+## Como rodar o projeto
 
-Controle de gastos — ajudar o usuário a controlar seus gastos no mês e adquirir mais controle financeiro.
+Projeto criado com [`create-expo-app`](https://www.npmjs.com/package/create-expo-app) (Expo / React Native).
+
+1. Instale as dependências
+
+   ```bash
+   npm install
+   ```
+
+2. Inicie o app
+
+   ```bash
+   npx expo start
+   ```
+
+3. Abra no seu dispositivo ou emulador:
+   - **Expo Go**: escaneie o QR Code exibido no terminal
+   - **Web**: pressione `w` no terminal
+   - **Android emulador**: pressione `a`
+   - **iOS simulator**: pressione `i`
 
 ## Fichas de Entrega
 
