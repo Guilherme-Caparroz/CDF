@@ -1,8 +1,25 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import { carregarLancamentos } from '../dados';
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const [carregando, setCarregando] = useState(true);
+
+  // com array vazio roda uma vez so quando o celular abre *
+  useEffect(() => {
+    async function iniciar() {
+      await carregarLancamentos(); // busca o que tá salvo no banco local
+      setCarregando(false);        // avisa que já pode mostrar a tela
+    }
+    iniciar();
+  }, []);
+
+  // eu coloquei essa parte aqui gui no seu arquivo se der erro e essa parte aqui *
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -22,7 +39,7 @@ export default function HomeScreen() {
         <View>
           <Text style={styles.tituloSecao}>Últimos Lançamentos</Text>
 
-          {/* Item 1: Salário (id: 0) */}
+          {/* Item 1: Salário */}
           <Link href={{ pathname: '/detalhes', params: { id: '0' } }} style={styles.linkDetalhe}>
             <View style={styles.cardLancamento}>
               <View style={styles.iconeArea}>
@@ -72,9 +89,13 @@ export default function HomeScreen() {
               </View>
             </View>
           </Link>
-
-          <TouchableOpacity style={styles.botaoAdicionar}>
-            <Text style={styles.textoBotaoAdicionar}>+ Adicionar</Text>
+          
+          {/* Botão de Adicionar funcional via Imperativa do Router */}
+          <TouchableOpacity
+            style={styles.botaoAdicionar}
+            onPress={() => router.push('/adicionar')}
+          >
+            <Text style={styles.textoBotaoAdicionar}>Adicionar</Text>
           </TouchableOpacity>
         </View>
 
@@ -95,7 +116,7 @@ const styles = StyleSheet.create({
   linkDetalhe: {
     marginBottom: 0,
   },
-    header: {
+  header: {
     backgroundColor: '#1B2340',
     paddingTop: 60,
     paddingBottom: 20,
@@ -106,8 +127,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-
-  // Card de saldo
   cardSaldo: {
     backgroundColor: '#1B2340',
     borderRadius: 16,
@@ -140,8 +159,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9CA3AF',
   },
-
-  // Seção de lançamentos
   tituloSecao: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -201,8 +218,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#8A8FA3',
   },
-
-  // Botão Adicionar
   botaoAdicionar: {
     backgroundColor: '#22C55E',
     borderRadius: 30,
