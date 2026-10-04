@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
-import { adicionarlancamento } from './dados';
+import { inserirLancamento } from '../database/database';
 
 const categorias = [
   { nome: 'Salário', icone: '💼' },
@@ -26,37 +26,34 @@ export default function AdicionarLancamento() {
   const [data, setData] = useState('05 de Agosto, 2025');
   const [observacao, setObservacao] = useState(''); // descriçao do js
 
-  function handleSalvar() {
-    //ve se os campos obrigatorios tao com algo
+  async function handleSalvar() {
     if (!valor || !nome || !categoria || !data) {
       alert('Preencha valor, descrição, categoria e data.');
       return;
     }
 
-    adicionarlancamento(
+    await inserirLancamento({
       nome,
-      parseFloat(valor),
-      tipo,
+      valor: parseFloat(valor.replace(',', '.')),
+      tipo: tipo as 'receita' | 'despesa',
       categoria,
       data,
-      observacao
-    );
+      descricao: observacao,
+    });
 
-    // Volta pra tela inicial depois de salvar
     router.back();
   }
-
   return (
     <View style={styles.container}>
 
       <View style={styles.header}>
-  <TouchableOpacity onPress={() => router.back()}>
-    <Text style={styles.textoVoltar}>← Voltar</Text>
-  </TouchableOpacity>
-  <View style={styles.headerCentro} pointerEvents="none">
-    <Text style={styles.headerTitulo}>Adicionar lançamento</Text>
-  </View>
-</View>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.textoVoltar}>← Voltar</Text>
+        </TouchableOpacity>
+        <View style={styles.headerCentro} pointerEvents="none">
+          <Text style={styles.headerTitulo}>Adicionar lançamento</Text>
+        </View>
+      </View>
 
       <View style={styles.conteudo}>
 
@@ -170,19 +167,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   headerTitulo: {
-  color: 'white',
-  fontSize: 17,
-  fontWeight: 'bold',
-},
-headerCentro: {
-  position: 'absolute',
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+    color: 'white',
+    fontSize: 17,
+    fontWeight: 'bold',
+  },
+  headerCentro: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   conteudo: {
     padding: 20,
@@ -269,8 +266,8 @@ headerCentro: {
     color: '#9CA3AF',
   },
 
-// Inputs genéricos
-input: {
+  // Inputs genéricos
+  input: {
     backgroundColor: 'white',
     borderRadius: 14,
     paddingHorizontal: 16,
@@ -281,18 +278,18 @@ input: {
     borderColor: '#E5E7EB',
   },
 
-observacaoInput: {
+  observacaoInput: {
     minHeight: 90,
     textAlignVertical: 'top',
-},
+  },
 
-// Categorias
-linhaCategorias: {
+  // Categorias
+  linhaCategorias: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-},
-chip: {
+  },
+  chip: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -302,8 +299,8 @@ chip: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
     gap: 6,
-},
-chipSelecionado: {
+  },
+  chipSelecionado: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#DCFCE7',
@@ -313,23 +310,23 @@ chipSelecionado: {
     borderWidth: 1,
     borderColor: '#22C55E',
     gap: 6,
-},
-chipIcone: {
+  },
+  chipIcone: {
     fontSize: 13,
-},
-chipTexto: {
+  },
+  chipTexto: {
     fontSize: 13,
     color: '#1B2340',
     fontWeight: '500',
-},
-chipTextoSelecionado: {
+  },
+  chipTextoSelecionado: {
     fontSize: 13,
     color: '#166534',
     fontWeight: '600',
-},
+  },
 
-// Data
-dataContainer: {
+  // Data
+  dataContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -338,28 +335,28 @@ dataContainer: {
     paddingVertical: 14,
     borderWidth: 1,
     borderColor: '#E5E7EB',
-},
-dataInput: {
+  },
+  dataInput: {
     flex: 1,
     fontSize: 14,
     color: '#1B2340',
     padding: 0,
-},
-calendario: {
+  },
+  calendario: {
     fontSize: 16,
-},
+  },
 
-// Botão salvar
-botaoSalvar: {
+  // Botão salvar
+  botaoSalvar: {
     backgroundColor: '#22C55E',
     borderRadius: 30,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 24,
-},
-textoBotaoSalvar: {
+  },
+  textoBotaoSalvar: {
     color: 'white',
     fontSize: 15,
     fontWeight: 'bold',
-},
+  },
 });

@@ -1,16 +1,49 @@
-import React from 'react';
-import { Link, useLocalSearchParams } from 'expo-router';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Link, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 
-import { lancamentos } from './dados';
+import { buscarLancamento, excluirLancamento, Lancamento } from '../database/database';
 
 export default function Tela2() {
+    const router = useRouter();
+
     // Pega o id que veio da tela anterior
     const { id } = useLocalSearchParams();
 
-    // Procura o lançamento pelo id de forma segura
-    const lancamento = id !== undefined ? lancamentos[Number(id)] : null;
+    const [lancamento, setLancamento] = useState<Lancamento | null>(null);
+    const [carregando, setCarregando] = useState(true);
 
+    // Procura o lançamento no banco pelo id (recarrega ao voltar da tela de editar)
+    useFocusEffect(
+        useCallback(() => {
+            async function buscar() {
+                if (id !== undefined) {
+                    const l = await buscarLancamento(Number(id));
+                    setLancamento(l ?? null);
+                }
+                setCarregando(false);
+            }
+            buscar();
+        }, [id])
+    );
+
+    // Pede confirmação antes de excluir
+    function confirmarExclusao() {
+        Alert.alert('Excluir lançamento', 'Tem certeza que deseja excluir?', [
+            { text: 'Cancelar', style: 'cancel' },
+            {
+                text: 'Excluir',
+                style: 'destructive',
+                onPress: async () => {
+                    await excluirLancamento(Number(id));
+                    router.back();
+                },
+            },
+        ]);
+    }
+
+    // evita piscar "não encontrado" enquanto busca no banco
+    if (carregando) return null;
 
     if (!lancamento) {
         return (
@@ -68,10 +101,21 @@ export default function Tela2() {
                 <Text style={styles.titulo3}>Data: {lancamento.data}</Text>
 
                 <Text style={styles.titulo4}>DESCRIÇÃO</Text>
-                <Text style={styles.titulo5}>{lancamento.descricao}</Text>
+                <Text style={styles.titulo5}>{lancamento.descricao || '—'}</Text>
             </View>
 
             <View style={styles.areaBotao}>
+                <TouchableOpacity
+                    style={styles.botaoEditar}
+                    onPress={() => router.push({ pathname: '/adicionar', params: { id: String(lancamento.id) } })}
+                >
+                    <Text style={styles.textoBotaoBranco}>Editar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.botaoExcluir} onPress={confirmarExclusao}>
+                    <Text style={styles.textoBotaoBranco}>Excluir</Text>
+                </TouchableOpacity>
+
                 <Link href="/" style={styles.botaovoltarbaixo}>
                     <Text style={styles.textoBotao}>Voltar para Lista</Text>
                 </Link>
@@ -192,6 +236,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 30,
         marginTop: 20,
         alignItems: 'center',
+        gap: 12,
     },
 
     botaovoltarbaixo: {
@@ -207,6 +252,30 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '600',
         color: '#1B2340',
+        textAlign: 'center',
+    },
+
+    // --- estilos novos ---
+    botaoEditar: {
+        alignSelf: 'stretch',
+        backgroundColor: '#22C55E',
+        borderRadius: 12,
+        paddingVertical: 14,
+        alignItems: 'center',
+    },
+
+    botaoExcluir: {
+        alignSelf: 'stretch',
+        backgroundColor: '#EF4444',
+        borderRadius: 12,
+        paddingVertical: 14,
+        alignItems: 'center',
+    },
+
+    textoBotaoBranco: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: 'white',
         textAlign: 'center',
     },
 });
