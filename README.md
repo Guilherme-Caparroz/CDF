@@ -5,7 +5,7 @@
 
 [![CI](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml/badge.svg)](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml) [![Nota](https://img.shields.io/badge/Nota%20PAM%20I-MB-green)](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml)
 
-**MB** — Muito bom · **89%** (49/55 pontos) · atualizado em 2026-10-05 23:26
+**MB** — Muito bom · **89%** (49/55 pontos) · atualizado em 2026-10-07 08:59
 
 | Fase | Pontos |
 |------|--------|
