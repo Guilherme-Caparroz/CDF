@@ -76,3 +76,20 @@ Projeto criado com [`create-expo-app`](https://www.npmjs.com/package/create-expo
 
 > [!TIP]
 > Material completo do curso: [PAM I](https://etec-bento-quirino.github.io/Programacao-Aplicativos-Moveis-I/)
+
+
+---
+
+## Colaboração por integrante
+
+> *Excluídos: commits do professor Jackson Sá (wendelmax), `github-actions[bot]` e `dependabot[bot]`. Contagem com base em `git log --no-merges`.*
+
+| # | Integrante | Commits | Participação |
+|---|------------|---------|--------------|
+| 1 | Guisantoss-gif | 11 | 39.3% ███████░░░░░░░░░░░░░ |
+| 2 | Guilherme Caparroz | 8 | 28.6% █████░░░░░░░░░░░░░░░ |
+| 3 | cauaoli-silva | 4 | 14.3% ██░░░░░░░░░░░░░░░░░░ |
+| 4 | ErickConstante | 3 | 10.7% ██░░░░░░░░░░░░░░░░░░ |
+| 5 | Erick | 2 | 7.1% █░░░░░░░░░░░░░░░░░░░ |
+
+**Total de commits considerados:** 28
