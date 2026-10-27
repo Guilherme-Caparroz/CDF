@@ -78,6 +78,7 @@ Projeto criado com [`create-expo-app`](https://www.npmjs.com/package/create-expo
 > Material completo do curso: [PAM I](https://etec-bento-quirino.github.io/Programacao-Aplicativos-Moveis-I/)
 
 
+
 ---
 
 ## Colaboração por integrante
@@ -86,10 +87,9 @@ Projeto criado com [`create-expo-app`](https://www.npmjs.com/package/create-expo
 
 | # | Integrante | Commits | Participação |
 |---|------------|---------|--------------|
-| 1 | Guisantoss-gif | 11 | 39.3% ███████░░░░░░░░░░░░░ |
-| 2 | Guilherme Caparroz | 8 | 28.6% █████░░░░░░░░░░░░░░░ |
-| 3 | cauaoli-silva | 4 | 14.3% ██░░░░░░░░░░░░░░░░░░ |
-| 4 | ErickConstante | 3 | 10.7% ██░░░░░░░░░░░░░░░░░░ |
-| 5 | Erick | 2 | 7.1% █░░░░░░░░░░░░░░░░░░░ |
+| 1 | Guilherme Oliveira Santos | 11 | 39.3% ███████░░░░░░░░░░░░░ |
+| 2 | Guilherme de Sousa Caparroz | 8 | 28.6% █████░░░░░░░░░░░░░░░ |
+| 3 | Erick Constante | 5 | 17.9% ███░░░░░░░░░░░░░░░░░ |
+| 4 | Cauã da Silva Oliveira | 4 | 14.3% ██░░░░░░░░░░░░░░░░░░ |
 
 **Total de commits considerados:** 28
