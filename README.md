@@ -5,12 +5,12 @@
 
 [![CI](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml/badge.svg)](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml) [![Nota](https://img.shields.io/badge/Nota%20PAM%20I-MB-green)](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml)
 
-**MB** — Muito bom · **89%** (49/55 pontos) · atualizado em 2026-10-27 23:20
+**MB** — Muito bom · **91%** (50/55 pontos) · atualizado em 2026-10-28 01:27
 
 | Fase | Pontos |
 |------|--------|
 | Fase 1 — Estrutura | 9/10 |
-| Fase 2 — AsyncStorage | 14/15 |
+| Fase 2 — AsyncStorage | 15/15 |
 | Fase 3 — SQLite | 26/30 |
 
 Checklist item a item em [NOTA.md](NOTA.md) · [ver a rodada mais recente no Actions](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml)
