@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
-import { Link, useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { Link, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { buscarLancamento, excluirLancamento, Lancamento } from '../database/database';
 
@@ -9,6 +9,8 @@ export default function Tela2() {
 
     // Pega o id que veio da tela anterior
     const { id } = useLocalSearchParams();
+    const idParam = Array.isArray(id) ? id[0] : id;
+    const idLancamento = idParam ? Number(idParam) : null;
 
     const [lancamento, setLancamento] = useState<Lancamento | null>(null);
     const [carregando, setCarregando] = useState(true);
@@ -17,14 +19,14 @@ export default function Tela2() {
     useFocusEffect(
         useCallback(() => {
             async function buscar() {
-                if (id !== undefined) {
-                    const l = await buscarLancamento(Number(id));
+                if (idLancamento !== null && Number.isInteger(idLancamento) && idLancamento > 0) {
+                    const l = await buscarLancamento(idLancamento);
                     setLancamento(l ?? null);
                 }
                 setCarregando(false);
             }
             buscar();
-        }, [id])
+        }, [idLancamento])
     );
 
     // Pede confirmação antes de excluir
@@ -35,7 +37,8 @@ export default function Tela2() {
                 text: 'Excluir',
                 style: 'destructive',
                 onPress: async () => {
-                    await excluirLancamento(Number(id));
+                    if (idLancamento === null) return;
+                    await excluirLancamento(idLancamento);
                     router.back();
                 },
             },

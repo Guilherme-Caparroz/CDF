@@ -1,8 +1,13 @@
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { inserirLancamento } from '../database/database';
+import {
+    atualizarLancamento,
+    buscarLancamento,
+    inserirLancamento,
+    Lancamento,
+} from '../database/database';
 
 const categorias = [
   { nome: 'Salário', icone: '💼' },
@@ -16,30 +21,110 @@ const categorias = [
 
 export default function AdicionarLancamento() {
   const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const idParam = Array.isArray(id) ? id[0] : id;
+  const idLancamento = idParam ? Number(idParam) : null;
+  const editando = idParam !== undefined;
+  const idValido = idLancamento !== null && Number.isInteger(idLancamento) && idLancamento > 0;
 
   // useState e um valor que pode ser modificado e atualiza a tela
   // quando esse valor muda. Cada campo do formulário tem o seu.
-  const [tipo, setTipo] = useState('receita'); // 'receita' = Entrada 'despesa' = Saída
+  const [tipo, setTipo] = useState<Lancamento['tipo']>('receita'); // 'receita' = Entrada 'despesa' = Saída
   const [valor, setValor] = useState('');
   const [nome, setNome] = useState('');       // campo descricao da tela
   const [categoria, setCategoria] = useState('');
   const [data, setData] = useState('05 de Agosto, 2025');
   const [observacao, setObservacao] = useState(''); // descriçao do js
+  const [carregandoLancamento, setCarregandoLancamento] = useState(editando);
+  const [registroCarregado, setRegistroCarregado] = useState(false);
+
+  useEffect(() => {
+    if (!editando) return;
+    if (!idValido || idLancamento === null) {
+      setCarregandoLancamento(false);
+      return;
+    }
+
+    let ativo = true;
+
+    async function carregarLancamento() {
+      try {
+        const lancamento = await buscarLancamento(idLancamento);
+        if (!ativo || !lancamento) return;
+
+        setTipo(lancamento.tipo);
+        setValor(String(lancamento.valor).replace('.', ','));
+        setNome(lancamento.nome);
+        setCategoria(lancamento.categoria);
+        setData(lancamento.data);
+        setObservacao(lancamento.descricao ?? '');
+        setRegistroCarregado(true);
+      } catch {
+        alert('Não foi possível carregar o lançamento.');
+      } finally {
+        if (ativo) setCarregandoLancamento(false);
+      }
+    }
+
+    carregarLancamento();
+    return () => {
+      ativo = false;
+    };
+  }, [editando, idLancamento, idValido]);
 
   async function handleSalvar() {
-    if (!valor || !nome || !categoria || !data) {
+    if (carregandoLancamento) return;
+    if (editando && (!idValido || !registroCarregado)) {
+      alert('Não foi possível localizar o lançamento para edição.');
+      return;
+    }
+
+    const nomeFinal = nome.trim();
+    const categoriaFinal = categoria.trim();
+    const dataFinal = data.trim();
+    const observacaoFinal = observacao.trim();
+    const valorTexto = valor.trim();
+
+    if (!/^\d+(?:[.,]\d{1,2})?$/.test(valorTexto)) {
+      alert('Informe um valor válido, com até duas casas decimais.');
+      return;
+    }
+
+    const valorNumerico = Number(valorTexto.replace(',', '.'));
+    if (!Number.isFinite(valorNumerico) || valorNumerico <= 0) {
+      alert('O valor do lançamento deve ser maior que zero.');
+      return;
+    }
+
+    if (!nomeFinal || !categoriaFinal || !dataFinal) {
       alert('Preencha valor, descrição, categoria e data.');
       return;
     }
 
-    await inserirLancamento({
-      nome,
-      valor: parseFloat(valor.replace(',', '.')),
-      tipo: tipo as 'receita' | 'despesa',
-      categoria,
-      data,
-      descricao: observacao,
-    });
+    if (nomeFinal.length > 100 || dataFinal.length > 40 || observacaoFinal.length > 500) {
+      alert('Confira o comprimento dos campos antes de salvar.');
+      return;
+    }
+
+    const dados = {
+      nome: nomeFinal,
+      valor: valorNumerico,
+      tipo,
+      categoria: categoriaFinal,
+      data: dataFinal,
+      descricao: observacaoFinal,
+    };
+
+    try {
+      if (editando && idLancamento !== null) {
+        await atualizarLancamento({ id: idLancamento, ...dados });
+      } else {
+        await inserirLancamento(dados);
+      }
+    } catch {
+      alert('Não foi possível salvar o lançamento.');
+      return;
+    }
 
     router.back();
   }
@@ -51,7 +136,7 @@ export default function AdicionarLancamento() {
           <Text style={styles.textoVoltar}>← Voltar</Text>
         </TouchableOpacity>
         <View style={styles.headerCentro} pointerEvents="none">
-          <Text style={styles.headerTitulo}>Adicionar lançamento</Text>
+          <Text style={styles.headerTitulo}>{editando ? 'Editar lançamento' : 'Adicionar lançamento'}</Text>
         </View>
       </View>
 
@@ -85,6 +170,7 @@ export default function AdicionarLancamento() {
             keyboardType="numeric"
             value={valor}
             onChangeText={setValor}
+            maxLength={15}
             placeholder="0,00"
             placeholderTextColor="#22C55E"
           />
@@ -96,6 +182,7 @@ export default function AdicionarLancamento() {
           style={styles.input}
           value={nome}
           onChangeText={setNome}
+          maxLength={100}
           placeholder="Ex: Salário, mercado, transporte..."
           placeholderTextColor="#9CA3AF"
         />
@@ -122,6 +209,7 @@ export default function AdicionarLancamento() {
             style={styles.dataInput}
             value={data}
             onChangeText={setData}
+            maxLength={40}
             placeholder="05 de Agosto, 2025"
             placeholderTextColor="#9CA3AF"
           />
@@ -136,10 +224,11 @@ export default function AdicionarLancamento() {
           placeholder="Escreva alguma nota adicional aqui..."
           placeholderTextColor="#9CA3AF"
           multiline
+          maxLength={500}
         />
 
-        <TouchableOpacity style={styles.botaoSalvar} onPress={handleSalvar}>
-          <Text style={styles.textoBotaoSalvar}>Salvar lançamento</Text>
+        <TouchableOpacity style={styles.botaoSalvar} onPress={handleSalvar} disabled={carregandoLancamento}>
+          <Text style={styles.textoBotaoSalvar}>{editando ? 'Salvar alterações' : 'Salvar lançamento'}</Text>
         </TouchableOpacity>
 
       </View>
