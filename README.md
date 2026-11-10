@@ -3,17 +3,18 @@
 <!-- PAM-CI-NOTA-INICIO -->
 ### Nota atual (automática) — Controle Financeiro Diário (lançamentos)
 
-[![CI](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml/badge.svg)](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml) [![Nota](https://img.shields.io/badge/Nota%20PAM%20I-MB-green)](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml)
+[![CI](https://github.com/ORG/REPO/actions/workflows/pam-ci.yml/badge.svg)](https://github.com/ORG/REPO/actions/workflows/pam-ci.yml) [![Nota](https://img.shields.io/badge/Nota%20PAM%20I-MB-green)](https://github.com/ORG/REPO/actions/workflows/pam-ci.yml)
 
-**MB** — Muito bom · **91%** (50/55 pontos) · atualizado em 2026-10-28 01:27
+**MB** — Muito bom · **88%** (88/100 pontos) · atualizado em 2026-11-10 01:28
 
 | Fase | Pontos |
 |------|--------|
-| Fase 1 — Estrutura | 9/10 |
+| Fase 1 — Estrutura | 10/10 |
 | Fase 2 — AsyncStorage | 15/15 |
-| Fase 3 — SQLite | 26/30 |
+| Fase 3 — SQLite | 30/30 |
+| Fase 4 — Versão Final (UX e Dispositivo) | 33/45 |
 
-Checklist item a item em [NOTA.md](NOTA.md) · [ver a rodada mais recente no Actions](https://github.com/Guilherme-Caparroz/CDF/actions/workflows/pam-ci.yml)
+Checklist item a item em [NOTA.md](NOTA.md) · [ver a rodada mais recente no Actions](https://github.com/ORG/REPO/actions/workflows/pam-ci.yml)
 <!-- PAM-CI-NOTA-FIM -->
 
 **Controle Financeiro** — Trabalho em Grupo de PAM I
