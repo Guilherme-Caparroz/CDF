@@ -5,10 +5,10 @@ import {
 } from 'react-native';
 
 import {
-    atualizarLancamento,
-    buscarLancamento,
-    inserirLancamento,
-    Lancamento,
+  atualizarLancamento,
+  buscarLancamento,
+  inserirLancamento,
+  Lancamento,
 } from '../database/database';
 
 const categorias = [
@@ -60,7 +60,7 @@ export default function AdicionarLancamento() {
 
     async function carregarLancamento() {
       try {
-        const lancamento = await buscarLancamento(idLancamento);
+        const lancamento = await buscarLancamento(idLancamento as number);
         if (!ativo) return;
         if (!lancamento) {
           alert('Esse lançamento não existe mais.');
