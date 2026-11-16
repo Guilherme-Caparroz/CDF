@@ -1,7 +1,8 @@
 import { Link, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import EstadoErro from '../components/EstadoErro';
 import { buscarLancamento, excluirLancamento, Lancamento } from '../database/database';
 
 export default function Tela2() {
@@ -14,20 +15,34 @@ export default function Tela2() {
 
     const [lancamento, setLancamento] = useState<Lancamento | null>(null);
     const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState(false);
 
-    // Procura o lançamento no banco pelo id (recarrega ao voltar da tela de editar)
+    // Procura o lançamento no banco pelo id
+    const buscar = useCallback(async () => {
+        try {
+            if (idLancamento !== null && Number.isInteger(idLancamento) && idLancamento > 0) {
+                const l = await buscarLancamento(idLancamento);
+                setLancamento(l ?? null);
+            }
+            setErro(false);
+        } catch {
+            setErro(true);
+        } finally {
+            setCarregando(false);
+        }
+    }, [idLancamento]);
+
+    // recarrega ao abrir e ao voltar da tela de editar
     useFocusEffect(
         useCallback(() => {
-            async function buscar() {
-                if (idLancamento !== null && Number.isInteger(idLancamento) && idLancamento > 0) {
-                    const l = await buscarLancamento(idLancamento);
-                    setLancamento(l ?? null);
-                }
-                setCarregando(false);
-            }
             buscar();
-        }, [idLancamento])
+        }, [buscar])
     );
+
+    function tentarNovamente() {
+        setCarregando(true);
+        buscar();
+    }
 
     // Pede confirmação antes de excluir
     function confirmarExclusao() {
@@ -38,15 +53,38 @@ export default function Tela2() {
                 style: 'destructive',
                 onPress: async () => {
                     if (idLancamento === null) return;
-                    await excluirLancamento(idLancamento);
+                    try {
+                        await excluirLancamento(idLancamento);
+                    } catch {
+                        alert('Não foi possível excluir o lançamento. Tente novamente.');
+                        return;
+                    }
                     router.back();
                 },
             },
         ]);
     }
 
-    // evita piscar "não encontrado" enquanto busca no banco
-    if (carregando) return null;
+    // loading enquanto busca no banco (também evita piscar "não encontrado")
+    if (carregando) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <ActivityIndicator size="large" color="#22C55E" />
+            </View>
+        );
+    }
+
+    // erro amigável se a leitura do banco falhar
+    if (erro) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <EstadoErro
+                    mensagem="Não foi possível carregar os detalhes deste lançamento."
+                    onTentarNovamente={tentarNovamente}
+                />
+            </View>
+        );
+    }
 
     if (!lancamento) {
         return (

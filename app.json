@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "StickerSmash",
+    "name": "CDF",
     "slug": "StickerSmash",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,7 +33,13 @@
           "imageWidth": 76
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-notifications",
+        {
+          "color": "#22C55E"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

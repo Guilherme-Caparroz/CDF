@@ -1,12 +1,14 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View,
+} from 'react-native';
 
 import {
-    atualizarLancamento,
-    buscarLancamento,
-    inserirLancamento,
-    Lancamento,
+  atualizarLancamento,
+  buscarLancamento,
+  inserirLancamento,
+  Lancamento,
 } from '../database/database';
 
 const categorias = [
@@ -18,6 +20,14 @@ const categorias = [
   { nome: 'Compras', icone: '🛍️' },
   { nome: 'Outros', icone: '▦' },
 ];
+
+// data de hoje no formato dd/mm/aaaa (valor inicial do campo Data)
+function dataDeHoje() {
+  const agora = new Date();
+  const dia = String(agora.getDate()).padStart(2, '0');
+  const mes = String(agora.getMonth() + 1).padStart(2, '0');
+  return `${dia}/${mes}/${agora.getFullYear()}`;
+}
 
 export default function AdicionarLancamento() {
   const router = useRouter();
@@ -33,10 +43,11 @@ export default function AdicionarLancamento() {
   const [valor, setValor] = useState('');
   const [nome, setNome] = useState('');       // campo descricao da tela
   const [categoria, setCategoria] = useState('');
-  const [data, setData] = useState('05 de Agosto, 2025');
+  const [data, setData] = useState(dataDeHoje());
   const [observacao, setObservacao] = useState(''); // descriçao do js
   const [carregandoLancamento, setCarregandoLancamento] = useState(editando);
   const [registroCarregado, setRegistroCarregado] = useState(false);
+  const [salvando, setSalvando] = useState(false); // evita salvar duas vezes ao tocar rápido
 
   useEffect(() => {
     if (!editando) return;
@@ -49,8 +60,13 @@ export default function AdicionarLancamento() {
 
     async function carregarLancamento() {
       try {
-        const lancamento = await buscarLancamento(idLancamento);
-        if (!ativo || !lancamento) return;
+        const lancamento = await buscarLancamento(idLancamento as number);
+        if (!ativo) return;
+        if (!lancamento) {
+          alert('Esse lançamento não existe mais.');
+          router.back();
+          return;
+        }
 
         setTipo(lancamento.tipo);
         setValor(String(lancamento.valor).replace('.', ','));
@@ -73,7 +89,7 @@ export default function AdicionarLancamento() {
   }, [editando, idLancamento, idValido]);
 
   async function handleSalvar() {
-    if (carregandoLancamento) return;
+    if (carregandoLancamento || salvando) return;
     if (editando && (!idValido || !registroCarregado)) {
       alert('Não foi possível localizar o lançamento para edição.');
       return;
@@ -115,6 +131,7 @@ export default function AdicionarLancamento() {
       descricao: observacaoFinal,
     };
 
+    setSalvando(true);
     try {
       if (editando && idLancamento !== null) {
         await atualizarLancamento({ id: idLancamento, ...dados });
@@ -122,7 +139,8 @@ export default function AdicionarLancamento() {
         await inserirLancamento(dados);
       }
     } catch {
-      alert('Não foi possível salvar o lançamento.');
+      alert('Não foi possível salvar o lançamento. Tente novamente.');
+      setSalvando(false);
       return;
     }
 
@@ -140,8 +158,11 @@ export default function AdicionarLancamento() {
         </View>
       </View>
 
-      <View style={styles.conteudo}>
-
+      <ScrollView contentContainerStyle={styles.conteudo} keyboardShouldPersistTaps="handled">
+      {carregandoLancamento ? (
+        <ActivityIndicator size="large" color="#22C55E" style={styles.carregando} />
+      ) : (
+      <>
         <Text style={styles.label}>TIPO DE LANÇAMENTO</Text>
         <View style={styles.linhaTipo}>
           <TouchableOpacity
@@ -210,7 +231,7 @@ export default function AdicionarLancamento() {
             value={data}
             onChangeText={setData}
             maxLength={40}
-            placeholder="05 de Agosto, 2025"
+            placeholder="dd/mm/aaaa"
             placeholderTextColor="#9CA3AF"
           />
           <Text style={styles.calendario}>📅</Text>
@@ -227,11 +248,19 @@ export default function AdicionarLancamento() {
           maxLength={500}
         />
 
-        <TouchableOpacity style={styles.botaoSalvar} onPress={handleSalvar} disabled={carregandoLancamento}>
-          <Text style={styles.textoBotaoSalvar}>{editando ? 'Salvar alterações' : 'Salvar lançamento'}</Text>
+        <TouchableOpacity
+          style={[styles.botaoSalvar, salvando && styles.botaoSalvarDesativado]}
+          onPress={handleSalvar}
+          disabled={carregandoLancamento || salvando}
+        >
+          <Text style={styles.textoBotaoSalvar}>
+            {salvando ? 'Salvando...' : editando ? 'Salvar alterações' : 'Salvar lançamento'}
+          </Text>
         </TouchableOpacity>
 
-      </View>
+      </>
+      )}
+      </ScrollView>
     </View>
   );
 }
@@ -272,6 +301,10 @@ const styles = StyleSheet.create({
 
   conteudo: {
     padding: 20,
+    paddingBottom: 40,
+  },
+  carregando: {
+    marginTop: 40,
   },
 
   label: {
@@ -442,6 +475,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 24,
+  },
+  botaoSalvarDesativado: {
+    opacity: 0.6,
   },
   textoBotaoSalvar: {
     color: 'white',

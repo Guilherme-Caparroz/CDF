@@ -21,6 +21,15 @@ Checklist item a item em [NOTA.md](NOTA.md) · [ver a rodada mais recente no Act
 
 Aplicativo de **controle de gastos** — ajuda o usuário a controlar seus gastos no mês e adquirir mais controle financeiro.
 
+## Funcionalidades (versão final)
+
+- **CRUD completo com SQLite** (`expo-sqlite`): adicionar, listar, editar e excluir lançamentos (com confirmação)
+- **Filtros e busca** na lista: Todos | Entradas | Saídas (`WHERE`) e busca por nome (`LIKE`)
+- **Saldo** calculado no banco (saldo inicial + entradas − saídas)
+- **Lembrete diário** com notificação local (`expo-notifications`): ligue na aba *Ajustes*, escolha o horário e use o botão "Testar notificação"
+- **UX**: indicador de carregamento, estado vazio com ícone e mensagens de erro amigáveis
+- **AsyncStorage apenas para preferências** (filtro padrão e configuração do lembrete); os lançamentos ficam só no SQLite
+
 ## Integrantes
 
 - Guilherme de Sousa Caparroz
