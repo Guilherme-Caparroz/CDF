@@ -1,12 +1,18 @@
-import { Link, useRouter, useFocusEffect } from 'expo-router';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
+import {
+  StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   listarLancamentos, excluirLancamento, calcularSaldo,
   obterSaldoInicial, definirSaldoInicial,
   Lancamento, FiltroTipo,
 } from '../../database/database';
+import { obterFiltroPadrao } from '../../database/preferencias';
+import FiltroTabs from '../../components/FiltroTabs';
+import EstadoVazio from '../../components/EstadoVazio';
+import EstadoErro from '../../components/EstadoErro';
 
 // transforma número em "R$ 1.234,56"
 function formatarMoeda(v: number) {
@@ -14,36 +20,59 @@ function formatarMoeda(v: number) {
   return `R$ ${inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.')},${centavos}`;
 }
 
-const filtros: { chave: FiltroTipo; rotulo: string }[] = [
-  { chave: 'todos', rotulo: 'Todos' },
-  { chave: 'receita', rotulo: 'Entradas' },
-  { chave: 'despesa', rotulo: 'Saídas' },
-];
-
 export default function HomeScreen() {
   const router = useRouter();
-  const [carregando, setCarregando] = useState(true);
+  const [carregando, setCarregando] = useState(true);   // true = mostra o "loading" da lista
+  const [erro, setErro] = useState<string | null>(null); // mensagem de erro amigável
   const [lista, setLista] = useState<Lancamento[]>([]);
   const [saldo, setSaldo] = useState(0);
   const [filtro, setFiltro] = useState<FiltroTipo>('todos');
+  const [busca, setBusca] = useState('');
+  const [prefsProntas, setPrefsProntas] = useState(false);
   const [editandoSaldo, setEditandoSaldo] = useState(false);
   const [saldoDigitado, setSaldoDigitado] = useState('');
 
-  async function carregar() {
-    setLista(await listarLancamentos(filtro)); // busca o que tá salvo no banco local
-    setSaldo(await calcularSaldo());
-    setCarregando(false);        // avisa que já pode mostrar a tela
+  // guarda o número da última consulta: evita que uma resposta antiga
+  // (ex.: busca digitada rápido) sobrescreva a mais nova
+  const ultimaConsulta = useRef(0);
+
+  // lê o filtro padrão salvo nas preferências (AsyncStorage) quando o app abre
+  useEffect(() => {
+    obterFiltroPadrao().then((f) => {
+      setFiltro(f);
+      setPrefsProntas(true);
+    });
+  }, []);
+
+  async function carregar(mostrarLoading = false) {
+    const numero = ++ultimaConsulta.current;
+    if (mostrarLoading) {
+      setCarregando(true);
+      setErro(null);
+    }
+    try {
+      const itens = await listarLancamentos(filtro, busca.trim()); // lê do SQLite (WHERE/LIKE)
+      const total = await calcularSaldo();
+      if (numero !== ultimaConsulta.current) return; // chegou uma consulta mais nova
+      setLista(itens);
+      setSaldo(total);
+      setErro(null);
+    } catch {
+      if (numero !== ultimaConsulta.current) return;
+      setErro('Não foi possível carregar seus lançamentos. Tente novamente.');
+    } finally {
+      if (numero === ultimaConsulta.current) setCarregando(false); // já pode mostrar a tela
+    }
   }
 
-  // com array vazio roda uma vez so quando o celular abre *
-  // (agora usa useFocusEffect: roda ao abrir, ao voltar do formulário e quando o filtro muda)
+  // useFocusEffect: roda ao abrir, ao voltar de outra tela e quando o filtro ou a busca mudam
+  // (espera ler a preferência de filtro padrão antes da primeira consulta)
   useFocusEffect(
     useCallback(() => {
+      if (!prefsProntas) return;
       carregar();
-    }, [filtro])
+    }, [filtro, busca, prefsProntas])
   );
-
-  // eu coloquei essa parte aqui gui no seu arquivo se der erro e essa parte aqui *
 
   async function salvarSaldoInicial() {
     const numero = parseFloat(saldoDigitado.replace(',', '.'));
@@ -51,7 +80,12 @@ export default function HomeScreen() {
       alert('Digite um valor válido.');
       return;
     }
-    await definirSaldoInicial(numero);
+    try {
+      await definirSaldoInicial(numero);
+    } catch {
+      alert('Não foi possível salvar o saldo. Tente novamente.');
+      return;
+    }
     setEditandoSaldo(false);
     carregar();
   }
@@ -63,11 +97,30 @@ export default function HomeScreen() {
         text: 'Excluir',
         style: 'destructive',
         onPress: async () => {
-          await excluirLancamento(item.id);
+          try {
+            await excluirLancamento(item.id);
+          } catch {
+            alert('Não foi possível excluir o lançamento. Tente novamente.');
+            return;
+          }
           carregar();
         },
       },
     ]);
+  }
+
+  // textos do estado vazio mudam conforme o que o usuário está vendo
+  function textosVazio() {
+    if (busca.trim()) {
+      return { icone: '🔍', titulo: 'Nada encontrado', mensagem: `Nenhum lançamento com "${busca.trim()}".` };
+    }
+    if (filtro === 'receita') {
+      return { icone: '📭', titulo: 'Nenhuma entrada registrada', mensagem: 'Tente outro filtro ou adicione uma nova entrada.' };
+    }
+    if (filtro === 'despesa') {
+      return { icone: '📭', titulo: 'Nenhuma saída registrada', mensagem: 'Tente outro filtro ou adicione uma nova saída.' };
+    }
+    return { icone: '🧾', titulo: 'Nenhum lançamento ainda', mensagem: 'Toque em "Adicionar" para registrar sua primeira entrada ou saída.' };
   }
 
   return (
@@ -116,29 +169,36 @@ export default function HomeScreen() {
         <View>
           <Text style={styles.tituloSecao}>Últimos Lançamentos</Text>
 
-          {/* Filtros: Todos | Entradas | Saídas (usa WHERE no banco) */}
-          <View style={styles.linhaAbas}>
-            {filtros.map((f) => (
-              <TouchableOpacity
-                key={f.chave}
-                onPress={() => setFiltro(f.chave)}
-                style={filtro === f.chave ? styles.abaAtiva : styles.aba}
-              >
-                <Text style={filtro === f.chave ? styles.textoAbaAtiva : styles.textoAba}>
-                  {f.rotulo}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {/* Busca por nome (usa LIKE no banco) */}
+          <TextInput
+            style={styles.inputBusca}
+            value={busca}
+            onChangeText={setBusca}
+            placeholder="🔍 Buscar por nome..."
+            placeholderTextColor="#9CA3AF"
+            returnKeyType="search"
+          />
 
-          {/* Antes eram 3 itens fixos (Item 1: Salário, Item 2: Supermercado, Item 3: Recarga Cartão); agora vem do banco */}
-          {!carregando && lista.length === 0 && (
-            <Text style={styles.textoVazio}>
-              Nenhum lançamento ainda. Toque em "Adicionar" para criar o primeiro.
-            </Text>
+          {/* Filtros: Todos | Entradas | Saídas (usa WHERE no banco) */}
+          <FiltroTabs valor={filtro} onChange={setFiltro} />
+
+          {/* Loading enquanto lê do SQLite */}
+          {carregando && (
+            <View style={styles.areaCarregando}>
+              <ActivityIndicator size="large" color="#22C55E" />
+              <Text style={styles.textoCarregando}>Carregando lançamentos...</Text>
+            </View>
           )}
 
-          {lista.map((item) => (
+          {/* Erro amigável se não conseguir carregar */}
+          {!carregando && erro && (
+            <EstadoErro mensagem={erro} onTentarNovamente={() => carregar(true)} />
+          )}
+
+          {/* Empty state: mensagem + ícone quando não há registros */}
+          {!carregando && !erro && lista.length === 0 && <EstadoVazio {...textosVazio()} />}
+
+          {!carregando && !erro && lista.map((item) => (
             <TouchableOpacity
               key={item.id}
               onPress={() => router.push({ pathname: '/detalhes', params: { id: String(item.id) } })}
@@ -334,44 +394,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 12,
   },
-  linhaAbas: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 16,
-  },
-  aba: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 20,
+  inputBusca: {
     backgroundColor: 'white',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 14,
+    color: '#1B2340',
     borderWidth: 1,
     borderColor: '#E5E7EB',
+    marginBottom: 12,
   },
-  abaAtiva: {
-    flex: 1,
+  areaCarregando: {
     alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#DCFCE7',
-    borderWidth: 1,
-    borderColor: '#22C55E',
+    paddingVertical: 40,
+    gap: 12,
   },
-  textoAba: {
-    fontSize: 13,
-    color: '#1B2340',
-    fontWeight: '500',
-  },
-  textoAbaAtiva: {
-    fontSize: 13,
-    color: '#166534',
-    fontWeight: '700',
-  },
-  textoVazio: {
+  textoCarregando: {
     fontSize: 13,
     color: '#8A8FA3',
-    textAlign: 'center',
-    paddingVertical: 24,
   },
   textoExcluir: {
     fontSize: 11,

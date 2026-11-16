@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //IMPORT DE BD LOCAL* (tipo uma gaveta)
 
+// ARQUIVO LEGADO (Fase 2): nenhuma tela importa mais este arquivo.
+// Desde a Fase 3 os lançamentos ficam só no SQLite (src/database/database.ts).
+// As preferências que ainda usam AsyncStorage estão em src/database/preferencias.ts.
+
 const CHAVE_STORAGE = '@finanapp_lancamentos';
 
 //ARRAY LANCAMENTO

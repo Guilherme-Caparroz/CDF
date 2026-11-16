@@ -6,7 +6,7 @@ export default function AppTabs() {
       <TabSlot style={{ height: '100%' }} />
       <TabList style={{ display: 'none' }}>
         <TabTrigger name="home" href="/" />
-        <TabTrigger name="explore" href="/explore" />
+        <TabTrigger name="ajustes" href="/ajustes" />
       </TabList>
     </Tabs>
   );
