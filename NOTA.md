@@ -6,7 +6,7 @@
 
 ![](https://img.shields.io/static/v1?label=Nota%20PAM%20I&message=MB&color=green)
 
-**Nota atual: MB** · 91% (50/55 pontos) · rodada de 2026-11-16 18:10:05 · commit `8638692`
+**Nota atual: MB** · 91% (50/55 pontos) · rodada de 2026-11-16 18:23:54 · commit `b17d1c3`
 
 Legenda: I = Insuficiente (0–25%) · R = Regular (25–50%) · B = Bom (50–75%) · MB = Muito bom (75–100%)
 
@@ -34,19 +34,19 @@ Legenda: I = Insuficiente (0–25%) · R = Regular (25–50%) · B = Bom (50–7
 ### Fase 2 — Persistência com AsyncStorage (15/15 pts)
 
 - [x] **(+1 pts)** Dependência async-storage está no package.json — `no package.json`
-- [x] **(+1 pts)** Existe import do AsyncStorage no código — `Projeto CDF/StickerSmash/src/app/dados.js`
-- [x] **(+1 pts)** Storage faz leitura com AsyncStorage.getItem — `Projeto CDF/StickerSmash/src/app/dados.js`
-- [x] **(+1 pts)** Storage grava com AsyncStorage.setItem — `Projeto CDF/StickerSmash/src/app/dados.js`
-- [x] **(+1 pts)** Existe função de CARREGAR a lista (carregar/load) — `Projeto CDF/StickerSmash/src/app/dados.js`
-- [x] **(+1 pts)** Existe função de ADICIONAR/CADASTRAR — `Projeto CDF/StickerSmash/src/app/dados.js`
-- [x] **(+1 pts)** Existe busca por id (buscar/find/getItem) — `Projeto CDF/StickerSmash/src/app/dados.js`
+- [x] **(+1 pts)** Existe import do AsyncStorage no código — `src/app/dados.js`
+- [x] **(+1 pts)** Storage faz leitura com AsyncStorage.getItem — `src/app/dados.js`
+- [x] **(+1 pts)** Storage grava com AsyncStorage.setItem — `src/app/dados.js`
+- [x] **(+1 pts)** Existe função de CARREGAR a lista (carregar/load) — `src/app/(tabs)/ajustes.tsx`
+- [x] **(+1 pts)** Existe função de ADICIONAR/CADASTRAR — `src/app/(tabs)/ajustes.tsx`
+- [x] **(+1 pts)** Existe busca por id (buscar/find/getItem) — `src/app/(tabs)/index.tsx`
 - [x] **(+1 pts)** Existe função de EXCLUIR/remover — `src/app/(tabs)/index.tsx`
 - [x] **(+1 pts)** Formulário lê entradas com TextInput — `src/app/adicionar.tsx`
 - [x] **(+1 pts)** Formulário salva chamando adicionar/salvar — `src/app/adicionar.tsx`
 - [x] **(+1 pts)** Lista é alimentada a partir do storage — `src/app/(tabs)/index.tsx`
 - [x] **(+1 pts)** Tela de detalhe usa busca/dados do storage — `src/app/detalhes.tsx`
 - [x] **(+1 pts)** Exclusão usa confirmação (Alert.alert) — `src/app/(tabs)/index.tsx`
-- [x] **(+1 pts)** Dados iniciais/seed são gravados na 1ª execução — `Projeto CDF/StickerSmash/src/app/dados.js`
+- [x] **(+1 pts)** Dados iniciais/seed são gravados na 1ª execução — `src/app/dados.js`
 - [x] **(+1 pts)** Formulário valida campos (trim/length/vazio) — `src/app/adicionar.tsx`
 
 ### Fase 3 — Banco de dados SQLite (26/30 pts)
@@ -64,7 +64,7 @@ Legenda: I = Insuficiente (0–25%) · R = Regular (25–50%) · B = Bom (50–7
 - [x] **(+2x2 pts)** Tela de lista carrega dados do banco — `src/app/(tabs)/index.tsx`
 - [ ] **(+2x2 pts)** Formulário salva no banco (INSERT/runAsync) — `src/app/adicionar.tsx`
 - [ ] **(+2x2 pts)** Detalhe busca no banco com WHERE/SELECT — `src/app/detalhes.tsx`
-- [x] **(+2x2 pts)** Usa async/await corretamente (mais de 2 await) — `Projeto CDF/StickerSmash/src/app/dados.js`
+- [x] **(+2x2 pts)** Usa async/await corretamente (mais de 2 await) — `scripts/reset-project.js`
 - [x] **(+2x2 pts)** Banco possui dados iniciais (seed inserido em SQL) — `src/database/database.ts`
 
 ## Para evoluir a nota
